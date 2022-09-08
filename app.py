@@ -3,6 +3,8 @@ import numpy as np
 import pickle
 import datetime as dt
 import pandas as pd
+import requests
+from streamlit_lottie import st_lottie
 
 def load_resources():
   with open("model_resources.pkl", "rb") as file:
@@ -15,9 +17,30 @@ model = data['model']
 OHencoder = data['one-hot']
 scaler = data['scaler']
 
+def load_lottie(url):
+  r = requests.get(url)
+  if r.status_code != 200:
+    return None
+  return r.json()
 
-st.title("Washington House Price Prediction")
-st.write("""### Fill in the information to show the prediction""")
+lottie_coding = load_lottie("https://assets10.lottiefiles.com/private_files/lf30_p5tali1o.json")
+
+st.title(":house: Washington House Price Prediction")
+st.markdown("<h6>Created by Bryan Tamin, Stephen Hardjadilaga, and Diven Clementius</h6>", unsafe_allow_html=True)
+
+with st.container():
+  st.write("---")
+  left_column, right_column = st.columns(2)
+  with left_column:
+    st.header("About Us")
+    st.write("##")
+    st.markdown("<p style='text-align: justify;'>We are a Computer Science Student from Bina Nusantara University. For our machine learning project, we are creating a website that can help predict house prices in Washington. Since houses are a common needs in our daily life, by implementing Machine Learning Algorithm in our website, people can predict house prices based on their desired house specification ranging from Num of Bedroom, Num of Bathroom, House Location, and etc. Therefore, we hope that our website can be useful and helpful for our users. </p>", unsafe_allow_html=True)
+  with right_column:
+    st_lottie(lottie_coding, height=300, key="House")
+
+
+st.write("---")
+st.write("""### Fill in the information to Predict House Price""")
 
 cities = (
   'Shoreline', 'Kent', 'Bellevue', 'Redmond', 'Seattle',
@@ -59,16 +82,16 @@ with st.sidebar:
   waterfront = 1 if st.selectbox("Is it on waterfront?", tof) == "Yes" else 0
   view = 1 if st.selectbox("Is there any balcony?", tof) == "Yes" else 0
   condition = bathroom = st.select_slider("Condition",np.arange(1,6))
-  yr_built = st.number_input("Year built",1800,2022)
-  yr_renovated = st.number_input("Year renovated",1800,2022)
+  yr_built = st.number_input("Year built",1800,2022,2000)
+  yr_renovated = st.number_input("Year renovated",1800,2022,2000)
   listed_date = st.date_input("Listed Date")
 
-bedroom = st.select_slider("Number of bedrooms",np.arange(0,20.1,0.5))
-bathroom = st.select_slider("Number of bathrooms",np.arange(0,20.1,0.5))
-sqft_lot = st.number_input("House land area (Square Feet)",0)
-sqft_above = st.number_input("House area (Square Feet)",0)
-sqft_basement = st.number_input("House basement area (Square Feet)",0)
-floor = st.select_slider("Number of floors",np.arange(0,20.1,0.5))
+bedroom = st.select_slider("Number of bedrooms",np.arange(0,20.1,0.5),3)
+bathroom = st.select_slider("Number of bathrooms",np.arange(0,20.1,0.5),3)
+sqft_lot = st.number_input("House land area (Square Feet)",0,value = 100)
+sqft_above = st.number_input("House area (Square Feet)",0, value = 100)
+sqft_basement = st.number_input("House basement area (Square Feet)",0,value = 100)
+floor = st.select_slider("Number of floors",np.arange(0,20.1,0.5),1)
 
 
 

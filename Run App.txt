@@ -1,0 +1,1 @@
+Open this Project directory using terminal then write "streamlit run app.py"
